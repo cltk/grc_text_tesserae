@@ -117,6 +117,3 @@ dmypy.json
 # Pipenv files
 Pipfile
 Pipfile.lock
-
-# Reader code
-bin/
