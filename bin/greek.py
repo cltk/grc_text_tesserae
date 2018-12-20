@@ -32,14 +32,15 @@ class TesseraeCorpusReader(PlaintextCorpusReader):
                 yield f.read()
 
 
-    def text(self, fileids):
+    def text(self, fileids, plaintext=True):
         """
         Returns the text content of a .tess file, i.e. removing the bracketed
         citation info (e.g. "<Ach. Tat.  1.1.0>")
         """
 
         for doc in self.docs(fileids):
-            doc = re.sub(r'<.+?>\s', '', doc) # Remove citation info
+            if plaintext==True:
+                doc = re.sub(r'<.+?>\s', '', doc) # Remove citation info
             doc = doc.rstrip() # Clean up final line breaks
             yield doc
 
@@ -54,6 +55,17 @@ class TesseraeCorpusReader(PlaintextCorpusReader):
         for text in self.text(fileids):
             for para in text.split('\n\n'):
                 yield para
+
+
+    ### WRITE DOCSTRING
+    def lines(self, fileids, plaintext=True):
+        """
+        """
+
+        for text in self.text(fileids, plaintext):
+            text = re.sub(r'\n\s*\n', '\n', text, re.MULTILINE) # Remove blank lines
+            for line in text.split('\n'):
+                yield line
 
 
     ### WRITE DOCSTRING
@@ -94,6 +106,9 @@ if __name__ == "__main__":
     sample = tess_greek.fileids()[0]
     s = tess_greek.pos_tokenize(sample)
     print(next(s)[0][:10])
+    line = tess_greek.lines(sample, plaintext=False)
+    print(next(line))
+    print(next(line))
     # Results:
     #
     # - Input
